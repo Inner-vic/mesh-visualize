@@ -1,80 +1,59 @@
-# Mesh Visualize
+# Mesh Visualize · 评测结果可视化
 
-将已完成评测的 `vis/` 数据转换为可离线查看的 2.5D Mesh 评价图和 HTML 复核报告，支持 GT/Prediction 对照、同帧相机与 LiDAR 展示，以及 Gaussian 可视化。
+[实习项目总览](https://github.com/Inner-vic/internship-projects) · [使用与验证](docs/project-guide.md)
 
-这是评测结果的本地后处理工具，不执行模型训练或推理。当前固定协议为指定十场景的第 7 帧，场景清单见 [fixed10-scenes.json](fixed10-scenes.json)；其他数据需先适配输入协议。
+把固定场景评测产物转换为可对照、可逐图复核、可离线交付的视觉证据。
 
-## 输入与输出
+## 解决的问题
 
-| 项目 | 内容 |
+单张渲染图难以解释预测差异：场景、帧、视角、尺度和输入身份可能各不相同；图片生成完成，也不等于有人真正看过并完成评价。
+
+项目将固定场景出图、同尺度对照、逐图判断和结果绑定组织为一份可离线查看与复核的视觉证据包。
+
+## 实现了什么
+
+| 能力 | 实现结果 |
 | --- | --- |
-| 输入 | 完整 `vis/`，包含同帧 Mesh GT/Prediction、相机、LiDAR、Gaussian 和元数据 |
-| 可选身份 | 实际任务、检查点哈希、代码提交和数据版本；正式复核应提供 |
-| 主要输出 | 10 张 GT/Prediction/Camera/LiDAR/Gaussian 五视图评价卡 |
-| 辅助输出 | 20 张俯视诊断图、HTML 复核页、图像元数据和 SHA-256 |
-| 复核结果 | `finalize` 后生成绑定本轮图像与判断的 `result.json` |
+| 固定协议输入 | 检查十场景、第 7 帧及同帧传感器元数据 |
+| 多视图输出 | GT、Prediction、Camera、LiDAR、Gaussian 五视图及辅助诊断图 |
+| 交互复核页 | 逐图填写分类、边界、形状、匹配和结论，导出本轮判断 |
+| 结果绑定 | `finalize` 关联图像、身份、协议与复核记录，`check` 重新核验 |
 
-静态评价图固定 X:Y:Z 为 1:1:1，GT/Prediction 共用尺度和视角。默认俯角 30°、方位角 8°。Gaussian 展示为依据导出参数绘制的椭球线框。
+## 实现架构
 
-## 快速体验
+![Mesh Visualize的主要模块、执行顺序和关键边界](https://raw.githubusercontent.com/Inner-vic/internship-projects/main/assets/architecture/mesh-visualize.svg)
 
-已实测的环境为 Windows x64、Python 3.12；依赖固定在 [requirements.txt](requirements.txt)，另需系统中文字体。
+## 关键工程设计
 
-```powershell
-git clone https://github.com/Inner-vic/mesh-visualize.git
-cd mesh-visualize
-py -3.12 setup.py
-.\demo.cmd
-```
+### 1. 固定输入和共同视角
 
-安装器在项目内创建 `.venv` 并安装 NumPy、Pillow。源码克隆首次安装需访问包源；仓库不附 wheel 缓存。演示使用模拟数据，无需 GPU 或真实评测数据，结果不代表模型效果。
+静态视图保持 X:Y:Z=1:1:1，GT/Prediction 使用共同范围、尺度和视角。相机角度可以调整，但不通过夸张高度或补造网面改善视觉印象；必要同帧输入缺失时显式报错。
 
-Linux/macOS 提供 `python3 setup.py` 和 `.venv/bin/python mesh_eval.py ...` 路径，但尚未在这些系统实测。
+### 2. 把出图与评价分开
 
-## 处理真实评测结果
+Python/CLI 负责生成图像与元数据，人工或 Agent 负责实际读图与判断。最终结果允许“资料完整但质量不通过”，避免把可视化成功当作模型达标。
 
-先按[输入格式](docs/INPUT_FORMAT.md)准备数据。复制 [identity.example.json](identity.example.json) 为本轮 `identity.json`，填写实际身份；以下路径替换为自己的输入和全新输出目录：
+### 3. 让一轮判断绑定到一轮产物
 
-```powershell
-.\mesh.cmd inspect --vis "D:\eval\vis"
-.\generate.cmd --vis "D:\eval\vis" --identity ".\identity.json" --out "D:\eval\review-001"
-```
+复核记录包含图像路径、内容摘要、样本身份和具体判断；Agent 还需保留原始读图回执。程序能检查覆盖和绑定关系，不能仅凭哈希或一个字符串证明实际看图行为。
 
-打开输出目录的 `index.html`，逐张查看全部十张主要评价卡，填写分类、边界、形状、匹配、结论及总结，导出 `visual-review.json`。然后绑定并复核：
+## 产物与支持范围
 
-```powershell
-.\mesh.cmd finalize --run "D:\eval\review-001" --review "D:\reviews\visual-review.json"
-.\mesh.cmd check --run "D:\eval\review-001"
-```
+默认输出十张主要评价卡、二十张辅助俯视图、HTML 复核页和元数据。CLI、Python 原子接口与 VS Code/Cursor 插件入口共享相应实现。
 
-每轮使用独立输出目录，保留原始图片和判断。资料完整与模型质量分别判断：复核完成且质量不通过，也是有效结果。AI 复核还需逐图读取证据，规则见 [AGENTS.md](AGENTS.md)。
+该工具处理已完成的评测产物，不运行训练或推理。当前协议和数据要求保持项目特定范围；合成 DEMO 只展示工具流程，不表示真实模型效果。接口见[原子出图文档](docs/ATOMIC_CAPABILITY.md)，输入及验证范围见[格式规范](docs/INPUT_FORMAT.md)和[公开说明](https://github.com/Inner-vic/mesh-visualize/blob/main/PUBLICATION.md)。
 
-## Python 与插件入口
+## 源码导读
 
-使用本项目的依赖环境可直接调用：
+| 源码 | 关注的实现 |
+| --- | --- |
+| [mesh_visualize.py](mesh_visualize.py) | 原子出图入口 |
+| [five_view.py](five_view.py) | 五视图和 Gaussian 绘制 |
+| [mesh_eval.py](mesh_eval.py) | 协议、复核、finalize 与 check |
+| [fixed10-scenes.json](fixed10-scenes.json) | 固定场景协议 |
 
-```python
-from mesh_visualize import generate
+## 项目资料
 
-result = generate(vis_dir="D:/eval/vis", output_dir="D:/eval/review-002")
-```
+使用步骤、依赖和本地验证见[使用与验证](docs/project-guide.md)；源码来源与验证范围见[发布说明](https://github.com/Inner-vic/mesh-visualize/blob/main/PUBLICATION.md)。本页用于介绍实习阶段的实现与设计，具体结论以所链接的代码和证据为准。
 
-调用参数和返回字段见[原子接口](docs/ATOMIC_CAPABILITY.md)。该调用负责出图，正式身份绑定与逐图复核仍按上面的流程完成。
-
-仓库也包含 VS Code/Cursor 插件源码。需要插件时先构建分发包：
-
-```powershell
-python build_release.py --out dist
-```
-
-解压生成的 ZIP 后，从编辑器的“从 VSIX 安装”选择包内插件。CLI 和浏览器复核不依赖插件；安装及显示选项见[使用说明](docs/USAGE.md)。
-
-## 验证与限制
-
-```powershell
-.\.venv\Scripts\python.exe -B -m unittest discover -s tests -q
-```
-
-GitHub 的 [Source checks](https://github.com/Inner-vic/mesh-visualize/blob/main/.github/workflows/source-checks.yml) 执行源码检查，不自动构建分发包。源码同步时的测试范围见[发布说明](https://github.com/Inner-vic/mesh-visualize/blob/main/PUBLICATION.md)。
-
-本工具只评价这批可视化结果；不计算完整模型精度或真实高度验收指标。当前 LiDAR 产物为前方道路裁剪区域，相机投影也不能替代独立标定和正式精度评测。第三方来源见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+[RoadModel 评测](https://github.com/Inner-vic/roadmodel-evaluation)展示模型/编译评测编排；本工具作为独立后处理能力保留，数据接入须先满足固定协议。
