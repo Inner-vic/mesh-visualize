@@ -1,0 +1,29 @@
+stages: [verify]
+
+test-and-package:
+  image: python:3.12-slim
+  stage: verify
+  variables:
+    PYTHONDONTWRITEBYTECODE: "1"
+    PYTHONUTF8: "1"
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y --no-install-recommends fonts-noto-cjk
+    - python -m pip install -r requirements.txt
+  script:
+    - python -m unittest discover -s tests -v
+    - >-
+      python -m pip download --only-binary=:all: --platform win_amd64 --python-version 312 --implementation cp --abi cp312 -r requirements.txt --dest wheels
+    - python build_release.py --out dist
+  artifacts:
+    paths:
+      - dist/mesh-evaluation-1.4.0.zip
+      - dist/mesh-evaluation-1.4.0.sha256.txt
+    expire_in: 14 days
+
+plugin-syntax:
+  image: node:22-slim
+  stage: verify
+  script:
+    - node --check vendor/gaussianformer-vis/extension.js
+    - node --check vendor/gaussianformer-vis/media/panel.js

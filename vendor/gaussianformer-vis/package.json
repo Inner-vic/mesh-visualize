@@ -1,0 +1,73 @@
+{
+  "name": "gaussianformer-vis",
+  "displayName": "GaussianFormer Visualizer (Mesh Project)",
+  "description": "Visualize GaussianFormer road model: point clouds (GT/Pred/Lidar), camera images, and 3D Gaussian features inside VS Code or Cursor",
+  "version": "1.0.25",
+  "publisher": "gaussianformer",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "main": "./extension.js",
+  "extensionKind": [
+    "workspace"
+  ],
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "point cloud",
+    "gaussian",
+    "3d",
+    "visualization",
+    "lidar"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:gaussianVis.openVisualizer",
+    "onWebviewPanel:gaussianVisPanel",
+    "onCommand:meshProject.renderFixedTen"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "gaussianVis.openVisualizer",
+        "title": "GaussianFormer: Open Visualizer",
+        "icon": "$(graph-scatter)"
+      },
+      {
+        "command": "meshProject.renderFixedTen",
+        "title": "Mesh: Generate Fixed Ten-Scene Review"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "gaussianVis.openVisualizer",
+          "when": "explorerResourceIsFolder",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "GaussianFormer Visualizer",
+      "properties": {
+        "gaussianVis.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Optional Python override. Empty: use the opened toolkit workspace .venv, then python."
+        },
+        "gaussianVis.defaultMaxPoints": {
+          "type": "number",
+          "default": 0,
+          "description": "Default max points per cloud (0=unlimited)."
+        },
+        "gaussianVis.defaultZScale": {
+          "type": "boolean",
+          "default": false,
+          "description": "Default Z-axis x10 scaling"
+        }
+      }
+    }
+  }
+}

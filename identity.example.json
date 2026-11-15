@@ -1,0 +1,6 @@
+{
+  "task_uid": "填写已完成评价任务的UID",
+  "checkpoint_sha256": "填写实际checkpoint文件的64位SHA256",
+  "code_commit": "填写实际评价代码commit",
+  "dataset_version": "1.0.10"
+}
