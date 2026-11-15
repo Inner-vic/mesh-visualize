@@ -75,6 +75,6 @@ python build_release.py --out dist
 .\.venv\Scripts\python.exe -B -m unittest discover -s tests -q
 ```
 
-GitHub 的 [Source checks](.github/workflows/source-checks.yml) 执行源码检查，不自动构建分发包。源码同步时的测试范围见[发布说明](PUBLICATION.md)。
+GitHub 的 [Source checks](https://github.com/Inner-vic/mesh-visualize/blob/main/.github/workflows/source-checks.yml) 执行源码检查，不自动构建分发包。源码同步时的测试范围见[发布说明](https://github.com/Inner-vic/mesh-visualize/blob/main/PUBLICATION.md)。
 
 本工具只评价这批可视化结果；不计算完整模型精度或真实高度验收指标。当前 LiDAR 产物为前方道路裁剪区域，相机投影也不能替代独立标定和正式精度评测。第三方来源见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
