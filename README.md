@@ -2,7 +2,7 @@
 
 [实习项目总览](https://github.com/Inner-vic/internship-projects) · [使用与验证](docs/project-guide.md)
 
-把固定场景评测产物转换为可对照、可逐图复核、可离线交付的视觉证据。
+把已有 Mesh 或点云评测产物转换为等比例五视图，返回可追溯的图像与元数据。
 
 ## 解决的问题
 
@@ -12,12 +12,10 @@
 
 ## 实现了什么
 
-| 能力 | 实现结果 |
-| --- | --- |
-| 固定协议输入 | 检查十场景、第 7 帧及同帧传感器元数据 |
-| 多视图输出 | GT、Prediction、Camera、LiDAR、Gaussian 五视图及辅助诊断图 |
-| 交互复核页 | 逐图填写分类、边界、形状、匹配和结论，导出本轮判断 |
-| 结果绑定 | `finalize` 关联图像、身份、协议与复核记录，`check` 重新核验 |
+- 固定十场景 Mesh 保留既有出图与复核协议。
+- 新增点云与 Gaussian 一次出图入口，接收已有时序导出，按编号选择 GT / Prediction / Camera / LiDAR / Gaussian 五视图。
+- 静态视图保持 X:Y:Z=1:1:1，GT/PRED 共用范围和视角；采样、语义过滤与来源摘要随结果保留。
+- 命令行和 Python 接口可独立调用，由上层功能提供输入和消费返回的图像、manifest 与复用状态。
 
 ## 实现架构
 
@@ -39,15 +37,16 @@ Python/CLI 负责生成图像与元数据，人工或 Agent 负责实际读图�
 
 ## 产物与支持范围
 
-默认输出十张主要评价卡、二十张辅助俯视图、HTML 复核页和元数据。CLI、Python 原子接口与 VS Code/Cursor 插件入口共享相应实现。
+点云入口使用 `pointcloud.cmd` 或 `pointcloud_visualize.generate`，支持编号、数量与视角选择；固定十场景 Mesh 仍按原协议生成场景卡和复核文件。接口说明见[接入与扩展](docs/INTEGRATION.md)、[点云调用](docs/POINTCLOUD_USAGE.md)及[原子出图](docs/ATOMIC_CAPABILITY.md)。
 
-该工具处理已完成的评测产物，不运行训练或推理。当前协议和数据要求保持项目特定范围；合成 DEMO 只展示工具流程，不表示真实模型效果。接口见[原子出图文档](docs/ATOMIC_CAPABILITY.md)，输入及验证范围见[格式规范](docs/INPUT_FORMAT.md)和[公开说明](https://github.com/Inner-vic/mesh-visualize/blob/main/PUBLICATION.md)。
+本工具处理已经生成的评测产物，不启动训练或模型推理。公开仓库保留代码、输入规范和合成测试；源项目的实车图片、点云、Gaussian 输入与场景 ZIP 未随源码发布。使用自己的合法 `vis/` 输入；`demo.cmd` 仅展示合成诊断流程，不代表真实五视图或模型质量。
 
 ## 源码导读
 
 | 源码 | 关注的实现 |
 | --- | --- |
 | [mesh_visualize.py](mesh_visualize.py) | 原子出图入口 |
+| [pointcloud_visualize.py](pointcloud_visualize.py) | 时序点云输入、采样溯源与一次出图 |
 | [five_view.py](five_view.py) | 五视图和 Gaussian 绘制 |
 | [mesh_eval.py](mesh_eval.py) | 协议、复核、finalize 与 check |
 | [fixed10-scenes.json](fixed10-scenes.json) | 固定场景协议 |

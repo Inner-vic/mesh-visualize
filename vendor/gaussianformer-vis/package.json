@@ -2,7 +2,7 @@
   "name": "gaussianformer-vis",
   "displayName": "GaussianFormer Visualizer (Mesh Project)",
   "description": "Visualize GaussianFormer road model: point clouds (GT/Pred/Lidar), camera images, and 3D Gaussian features inside VS Code or Cursor",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "publisher": "gaussianformer",
   "engines": {
     "vscode": "^1.74.0"

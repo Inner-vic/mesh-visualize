@@ -1,5 +1,9 @@
 # 使用与排错
 
+已有点云 / LiDAR / Gaussian 导出请先看[点云一次出图](POINTCLOUD_USAGE.md)，含可重新渲染的三组真实输入。下文保留固定十场景 Mesh 流程。
+
+[返回首页](../README.md) · [完整使用指南](project-guide.md) · [公开示例范围](examples/README.md)
+
 ## 环境和入口
 
 Windows x64 推荐 Python 3.12；已在 Windows Python 3.12 实测。包内离线 wheel 只覆盖这一组合。Python 3.10—3.13 可通过联网 setup 安装固定依赖；Linux/macOS 路径支持由代码提供，尚未在这些系统实测。
@@ -10,15 +14,15 @@ Windows 双击 setup.cmd，或 `py -3.12 setup.py --offline`。联网安装保�
 
 ## 插件安装
 
-插件 VSIX 无需 npm 或编译。先运行 setup，再安装插件并打开本包 `.code-workspace`。插件从打开的工具包工作区寻找 `.venv`；如果只打开了原模型代码目录，请在设置 `gaussianVis.pythonPath` 中填本包 `.venv/Scripts/python.exe` 的实际绝对路径。Linux 对应 `.venv/bin/python`。
+插件 VSIX 无需 npm 或编译。源码用户先按[使用指南](project-guide.md)构建并解压分发包；分发包用户可直接安装。先运行 setup，再安装插件并打开本包 `.code-workspace`。插件从打开的工具包工作区寻找 `.venv`；如果只打开了原模型代码目录，请在设置 `gaussianVis.pythonPath` 中填本包 `.venv/Scripts/python.exe` 的实际绝对路径。Linux 对应 `.venv/bin/python`。
 
 VS Code Remote SSH 中，插件与 Python 必须安装在同一个远端扩展宿主；远端安装依赖、路径使用远端路径。Windows 离线 wheel 不能给 Linux 宿主安装。需要另一平台的离线包可在联网机器按相同 requirements 下载对应 wheel。
 
-命令行不可用时，在扩展面板 `…` → `从 VSIX 安装`。已有同 ID 1.0.21 会更新成项目副本 1.0.25；卸载/重装原 VSIX 可回退。源码克隆需先按根 README 构建分发包，插件不作为已构建的 VSIX 随 Git 源码提供。无需安装插件也可通过 CLI 和浏览器完成 M3。
+命令行不可用时，在扩展面板 `…` → `从 VSIX 安装`。已有同 ID 1.0.21 会更新成项目副本 1.0.26；卸载/重装原 VSIX 可回退。无需安装插件也可通过 CLI 和浏览器完成 M3。
 
 ## 浏览器复核与 JSON
 
-默认 viewer 模式包含十张五视图评价卡，逐张查看其中的 GT、Prediction、Camera、LiDAR 和 Gaussian；scene 模式按实际提供的照片与投影视图复核，辅助俯视图按需展开。旧 diagnostic 模式仍查看每对俯视对照图和差异图。填写分类、边界、形状、匹配的具体分析，选择结论并标记实际检查，补齐姓名和整组总结后导出 JSON。草稿保存在本机浏览器，不能代替正式导出；刷新或换电脑前建议导出。
+默认十个样本，逐张实际查看五视图中的GT、Prediction、Camera、LiDAR、Gaussian；view=scene时查看原照片、GT/PRED三维点和相机投影。辅助BEV按需展开。旧 diagnostic 模式仍查看每对俯视对照图和差异图；填四项具体分析，选结论，勾选实际检查。补齐姓名和整组总结后导出 JSON。草稿保存在本机浏览器，不能代替正式导出；刷新或换电脑前建议导出。
 
 `finalize` 将报告、图像和评价身份绑定并生成 result.json，同时更新 index.html。最终结果不允许原地二次 finalize；修订需保留原目录并创建新的一轮输出。`check` 会重验图像、协议、报告和结果之间的绑定。目录搬到另一台机器后仍可运行 check，不依赖原输入绝对路径。
 
@@ -46,7 +50,7 @@ VS Code Remote SSH 中，插件与 Python 必须安装在同一个远端扩展�
 
 分享时发送整个输出目录；静态 HTML 引用 images 相对路径，不能只发 index.html。MANIFEST.sha256.json 校验发布包文件；它用于完整性核对，不是数字签名。
 
-1.2.0 默认 scene 模式需要系统中文字体：Windows 使用微软雅黑，macOS 苹方，Linux 可安装 Noto Sans CJK；不随包再分发商业字体。旧 BEV 测试的通过只证明输入/出图链路，并不证明实车可解释性；本版另保留实际场景卡的人工图片检查记录。
+viewer / scene 模式需要系统中文字体：Windows 使用微软雅黑，macOS 苹方，Linux 可安装 Noto Sans CJK；不随包再分发商业字体。旧 BEV 测试的通过只证明输入/出图链路，并不证明实车可解释性；本版另保留实际场景卡的人工图片检查记录。
 
 读图回执的 image_path 使用相对本轮目录的路径，例如 scene-views/0_scene.png；capability 返回的绝对路径用于实际打开图片。receipt_ref 保留真实读取工具或模型调用的原始引用。
 

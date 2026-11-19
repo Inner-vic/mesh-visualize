@@ -14,7 +14,7 @@ import webbrowser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '1.4.0'
+VERSION = '1.5.1'
 LABELS = {1: '沥青', 2: '水泥', 4: '砖石路', 16: '减速带', 17: '井盖',
           23: '桥梁接缝', 24: '可移动障碍物', 25: '不可移动障碍物'}
 COLORS = {1: (127,127,127), 2: (200,200,200), 4: (160,120,70), 16: (255,0,0),

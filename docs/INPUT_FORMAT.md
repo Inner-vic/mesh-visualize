@@ -1,6 +1,10 @@
 # 输入规范
 
+数据从哪里取得、哪些LPAI信息已确认、旧vis是否可访问，见[数据来源说明](LPAI_DATA_SOURCE.md)。原始数据集目录不能直接替代模型评测生成的vis目录。
+
 本工具消费远端 `eval.py --vis-occ` 已生成的目录。它不提交远端任务，也不下载 checkpoint。先将评价产物解压到本地，不要把 ZIP 路径当 vis 目录传入。
+
+以下为原固定十场景入口的输入要求。任意已配对点云导出使用新增 [pointcloud入口](POINTCLOUD_USAGE.md#输入约定)，无需Mesh和固定场景元数据。
 
 每个数字编号 `{i}` 必须包含：
 
@@ -15,7 +19,7 @@
 
 `fixed10-scenes.json` 保存协议、数据版本、场景集合及源 GT 哈希。它属于项目版本控制材料；替换数据、帧或样本需正式创建新协议和验证适配，不能为了通过检查直接修改哈希。
 
-三维插件可另外显示 `{i}_lidar.pcd.bin.npy`、`{i}_image.jpg` 或 cam0/cam1 图像、`{i}_gaussian.pkl`。缺少这些扩展数据时，固定十图渲染仍可运行。Gaussian pickle 应来自可信的本项目评价产物。
+上表仅满足diagnostic辅助模式。默认viewer五视图还必须有 `{i}_image.jpg`、`{i}_mesh_pred.npy`、`{i}_lidar.pcd.bin.npy` 和 `{i}_gaussian.pkl`；scene相机投影模式还需原标定，具体约定见下文。缺少必要模态不会自动降级。Gaussian pickle 应来自可信的本项目评价产物。
 
 identity.json 必须提供本轮真实 `task_uid`、`checkpoint_sha256`、`code_commit`、`dataset_version=1.0.10`。程序检查必填、哈希格式和协议版本，不会访问平台核实 UID 或执行 checkpoint。身份真实性应来自原评价 manifest/任务回执；不要填写示例占位值。
 

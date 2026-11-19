@@ -1,5 +1,9 @@
 # mesh-visualize：项目原子出图能力
 
+组合到其他业务流程、返回值消费及后续扩展见[接入与扩展](INTEGRATION.md)。
+
+已有点云与Gaussian一次出图使用 `pointcloud_visualize.generate` / `pointcloud.cmd`，完整参数、返回值和内置真实输入试跑见[点云入口](POINTCLOUD_USAGE.md)。下文描述原固定十场景Mesh评价能力。
+
 一次调用接收已完成评价的 vis/，默认输出10张黑底五视图（GT、Prediction、Camera、LiDAR、Gaussian），附20张语义俯视辅助诊断图、HTML预览、逐图元数据和SHA256。无需插件或浏览器参与执行。
 
 ## 一次调用

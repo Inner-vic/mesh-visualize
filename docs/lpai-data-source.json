@@ -1,0 +1,117 @@
+{
+  "schema": "mesh-visualize.data-source/v1",
+  "checked_on": "2026-11-18",
+  "namespace": "vc-chassis",
+  "original_dataset": {
+    "name": "smartchassisdata-v3",
+    "version": "1.0.10",
+    "version_uid": "c3272b9a95d1495fadaea1397e6c1367",
+    "asset_status": "AVAILABLE",
+    "asset_metadata_verified": true,
+    "files_checked": false,
+    "storage_uri": "s3://tos-s3-cn-beijing.volces.com/prod-lpai-asset/dataset/smartchassisdata-v3/1.0.10-20260813004223/"
+  },
+  "historical_evaluation": {
+    "task_uid": "2e2bda32-e41b-47a5-9d48-8f1a5657961e",
+    "task_name": "eval_20260928_a10_03-2e2bda32",
+    "current_task_query": "TASK_NOT_FOUND",
+    "historical_container_vis_path": "/lpai/output/autoopt_m3_eval_8class/2-1-0/vis",
+    "historical_archive_relative_path": "autoopt_m3_eval_8class/2-1-0/vis.zip",
+    "persistent_vis_path": null,
+    "vis_files_currently_verified": false,
+    "vis_available": null,
+    "current_model_version_query": "MODELSET_VERSION_NOT_FOUND"
+  },
+  "access_checks": {
+    "verification_space": "bench-eval-offline",
+    "verification_space_uid": "395dafd5-4701-4480-8fad-3c33e9d24e53",
+    "resources": {
+      "cpu": 1,
+      "memory_gib": 4,
+      "gpu": 0
+    },
+    "access_method": "Jupyter terminal; read-only filesystem probes",
+    "space_started_with_user_approval": true,
+    "space_stop_verified": true,
+    "final_space_phase": "stopped",
+    "data_directory_modified": false,
+    "historical_ssh": "not used for successful verification"
+  },
+  "new_training_or_evaluation_started": false,
+  "devspaces_started": true,
+  "fallback": "examples/cases/README.md",
+  "verified_shared_vis": {
+    "files_currently_verified": true,
+    "volume": "vc-chassis-bd-ga",
+    "mount_point": "/mnt/volumes/vc-chassis-bd-ga",
+    "relative_path": "hyj/git2/roadmodel/SmartChassisDataV7/devV41GsOnlyB4-81e922d6/eval-epoch248-vis/4-0-0/vis",
+    "verified_path": "/mnt/volumes/vc-chassis-bd-ga/hyj/git2/roadmodel/SmartChassisDataV7/devV41GsOnlyB4-81e922d6/eval-epoch248-vis/4-0-0/vis",
+    "sample_count": 81,
+    "file_count": 567,
+    "file_bytes": 15070402231,
+    "paired_groups_missing_files": 0,
+    "suffix_counts": {
+      "_gt.pcd.bin.npy": 81,
+      "_pred.pcd.bin.npy": 81,
+      "_image.jpg": 81,
+      "_lidar.pcd.bin.npy": 81,
+      "_gaussian.pkl": 81,
+      "_paths.json": 81,
+      "_sensor_param.json": 81,
+      "_mesh_gt.npy": 0,
+      "_mesh_pred.npy": 0
+    },
+    "sibling_vis_zip_present": false,
+    "sample_zero": {
+      "gt_shape": [
+        5760000,
+        4
+      ],
+      "pred_shape": [
+        5760000,
+        4
+      ],
+      "lidar_shape": [
+        61332,
+        4
+      ],
+      "array_dtype": "float32",
+      "metadata_frame_index": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "metadata_input_dataset_version": "26-10-20-1"
+    },
+    "workflow": "pointcloud_visualize.generate / pointcloud.cmd; original-plugin-pointcloud",
+    "plugin_ui_load_exercised": false,
+    "compatible_with_fixed_ten": false,
+    "incompatibilities": [
+      "81 samples instead of fixed ten",
+      "no mesh_gt/mesh_pred exports",
+      "temporal frame metadata differs",
+      "sample metadata references another dataset version"
+    ],
+    "all_file_contents_decoded": false,
+    "model_quality_verdict": null,
+    "rendered_sample_indices": [
+      "0",
+      "40",
+      "80"
+    ],
+    "rendered_images_actually_inspected": true,
+    "preview_input_archive": {
+      "path": "examples/pointcloud-inputs.zip",
+      "bytes": 4737617,
+      "sha256": "ddde84671c428691a96cc5f657b27e6a692d8ec0e3df93bf2c106f40194069c1",
+      "source_vis_modified": false,
+      "excluded_semantic_labels": [
+        26
+      ],
+      "other_rows_preserved_bytewise": true,
+      "sampling_performed": false
+    }
+  },
+  "original_fixed_ten_vis_recovered": false
+}
